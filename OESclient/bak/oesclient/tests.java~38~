@@ -1,0 +1,136 @@
+package oesclient;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.net.*;
+import com.borland.jbcl.layout.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2008</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class tests extends JFrame {
+  JButton jButton1 = new JButton();
+  JButton jButton2 = new JButton();
+  JButton jButton3 = new JButton();
+  JButton jButton4 = new JButton();
+  Socket socket;
+  Socket Rsocket;
+  XYLayout xYLayout1 = new XYLayout();
+  JButton jButton5 = new JButton();
+  JButton jButton6 = new JButton();
+  JFrame prev=new JFrame();
+
+  public tests(Socket s,Socket r,JFrame f) {
+    try {
+      socket=s;
+      Rsocket=r;
+      prev=f;
+      jbInit();
+    }
+    catch(Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  void jbInit() throws Exception {
+    jButton1.setText("General Knowledge Quiz");
+    jButton1.addActionListener(new tests_jButton1_actionAdapter(this));
+    this.getContentPane().setLayout(xYLayout1);
+    jButton2.setText("How much do you know about the world graph?");
+    jButton3.setText("How much you know about your country?");
+    jButton4.setText("Feminity Quiz");
+    jButton5.setText(" Back to Home");
+    jButton5.addActionListener(new tests_jButton5_actionAdapter(this));
+    jButton6.setText("Exit");
+    jButton6.addActionListener(new tests_jButton6_actionAdapter(this));
+    this.getContentPane().add(jButton1,    new XYConstraints(168, 47, 301, 31));
+    this.getContentPane().add(jButton3,   new XYConstraints(169, 216, 303, 28));
+    this.getContentPane().add(jButton2,  new XYConstraints(168, 128, 303, 31));
+    this.getContentPane().add(jButton4,    new XYConstraints(170, 296, 302, 29));
+    this.getContentPane().add(jButton5,    new XYConstraints(22, 339, 104, 38));
+    this.getContentPane().add(jButton6,    new XYConstraints(2, 2, 104, 38));
+    this.setSize(650,400);
+     this.setTitle("Tests");
+  }
+
+  void jButton1_actionPerformed(ActionEvent e) {
+    try{
+      PrintStream out = new PrintStream(socket.getOutputStream());
+      out.println("tests#"+1);
+      System.out.println("event occurred");
+      ObjectInputStream ois=new ObjectInputStream(Rsocket.getInputStream());
+      ArrayList qs=(ArrayList)ois.readObject();
+      ArrayList ans=(ArrayList)ois.readObject();
+      ArrayList ops=(ArrayList)ois.readObject();
+      System.out.println("user error?");
+      String user=(String)ois.readObject();
+      System.out.println("user sent");
+      gk1 frame=new gk1(qs,ans,ops,socket,user,Rsocket,this);
+
+      this.setVisible(false);
+      frame.showFrame();
+      System.out.println("next frame created");
+
+    }catch(Exception ee){System.out.println(ee.toString());}
+  }
+
+  void jButton6_actionPerformed(ActionEvent e) {
+    try
+        {
+          PrintStream out = new PrintStream(socket.getOutputStream());
+          out.println("Exit#1");
+          socket.close();
+          Rsocket.close();
+          this.setVisible(false);
+        }catch(Exception i){}
+
+  }
+
+  void jButton5_actionPerformed(ActionEvent e) {
+this.setVisible(false);
+    prev.setVisible(true);
+  }
+}
+
+class tests_jButton1_actionAdapter implements java.awt.event.ActionListener {
+  tests adaptee;
+
+  tests_jButton1_actionAdapter(tests adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButton1_actionPerformed(e);
+  }
+}
+
+class tests_jButton6_actionAdapter implements java.awt.event.ActionListener {
+  tests adaptee;
+
+  tests_jButton6_actionAdapter(tests adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButton6_actionPerformed(e);
+  }
+}
+
+class tests_jButton5_actionAdapter implements java.awt.event.ActionListener {
+  tests adaptee;
+
+  tests_jButton5_actionAdapter(tests adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButton5_actionPerformed(e);
+  }
+}

@@ -1,0 +1,254 @@
+package oesclient;
+
+import javax.swing.*;
+import java.awt.*;
+//import com.borland.jbcl.layout.*;
+import java.awt.event.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2008</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class loginFrame extends JFrame {
+  JLabel jLabel1 = new JLabel();
+  JLabel uidLabel = new JLabel();
+  JLabel pLabel = new JLabel();
+  JTextField uidTextField = new JTextField();
+  JButton loginButton = new JButton();
+  ServerSocket socket;
+  Socket Rsock;
+  JPasswordField pTextField = new JPasswordField();
+  JButton loginButton1 = new JButton();
+  int i;
+  Socket sock;
+  boolean cameFromLogin=false;
+
+
+  public loginFrame() {
+    try {
+      jbInit();
+    }
+    catch(Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  void jbInit() throws Exception {
+    jLabel1.setFont(new java.awt.Font("Dialog", 1, 24));
+    jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+    jLabel1.setText("Online Quiz Fun");
+    jLabel1.setBounds(new Rectangle(116, 54, 404, 49));
+    this.getContentPane().setLayout(null);
+    uidLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    uidLabel.setText("User ID");
+    uidLabel.setBounds(new Rectangle(97, 134, 89, 33));
+    pLabel.setText("Password");
+    pLabel.setBounds(new Rectangle(98, 190, 89, 33));
+    pLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    loginButton.setBounds(new Rectangle(487, 262, 108, 38));
+    loginButton.setText("Sign In");
+    loginButton.addActionListener(new loginFrame_loginButton_actionAdapter(this));
+    uidTextField.setText("");
+    uidTextField.setBounds(new Rectangle(204, 135, 239, 38));
+    pTextField.setText("");
+    pTextField.setBounds(new Rectangle(204, 190, 240, 40));
+    loginButton1.addActionListener(new loginFrame_loginButton1_actionAdapter(this));
+    loginButton1.setText("Sign Up");
+    loginButton1.setBounds(new Rectangle(39, 263, 108, 38));
+    this.getContentPane().add(jLabel1, null);
+    this.getContentPane().add(uidLabel, null);
+    this.getContentPane().add(pLabel, null);
+    this.getContentPane().add(uidTextField, null);
+    this.getContentPane().add(loginButton, null);
+    this.getContentPane().add(pTextField, null);
+    this.getContentPane().add(loginButton1, null);
+    this.setSize(650,400);
+    this.setTitle("Sign In");
+    int p=read_From_File();
+    socket=new ServerSocket(p);
+    i=0;
+
+
+
+  }
+
+  public static void main(String []args)
+  {
+    loginFrame frame=new loginFrame();
+//    frame.setBounds(200,200,300,600);
+    frame.show();
+
+  }
+
+  public static void Write_to_File(int port)throws IOException
+  {
+	File F=new File("D:\\my documents\\BI061004\\acp lab works\\Final Project OES\\Port.txt");
+	FileWriter out=new FileWriter(F);
+	out.write(""+port);
+	out.close();
+  }
+
+	public static int read_From_File()throws IOException
+	{
+		File F=new File("D:\\my documents\\BI061004\\acp lab works\\Final Project OES\\Port.txt");
+		int port=0;
+		if(F.isFile())
+		{
+			BufferedReader in=new BufferedReader(new FileReader(F));
+			String line=null;
+			while((line=in.readLine()) != null)
+			{
+				port=Integer.parseInt(line);
+			}
+		}
+		return port;
+	}
+
+
+  void loginButton_actionPerformed(ActionEvent e) throws Exception
+  {
+    cameFromLogin=true;
+
+    try
+    {
+      String id = uidTextField.getText();
+      String pass = pTextField.getText();
+      if(!(id.equals("") || pass.equals("")))
+      {
+        InetAddress host = InetAddress.getLocalHost();
+        if (i == 0) {
+          sock = new Socket(host, 9987);
+        }
+        PrintStream out = new PrintStream(sock.getOutputStream());
+        out.println("login#" + id + "#" + pass);
+        //ServerSocket server=new ServerSocket(6788);
+        if (i == 0) {
+          Rsock = socket.accept();
+        }
+        Socket client = Rsock;
+        InputStream instr = client.getInputStream();
+        InputStreamReader inread = new InputStreamReader(instr);
+        BufferedReader inp = new BufferedReader(inread);
+        String input = inp.readLine();
+        if (input.compareToIgnoreCase("yes") == 0) {
+          //JOptionPane.showMessageDialog(null,"1 tiny thng done","Message",JOptionPane.PLAIN_MESSAGE);
+          takeTest testFrame = new takeTest(sock, Rsock);
+          this.setVisible(false);
+          testFrame.show();
+
+        }
+        else if (input.compareToIgnoreCase("no") == 0) {
+          JOptionPane.showMessageDialog(null, "Invalid Username or Password",
+                                        "Sign In Error",
+                                        JOptionPane.ERROR_MESSAGE);
+        }
+
+        //client.close();
+        //sock.close();
+
+
+        else
+        {
+          JOptionPane.showMessageDialog(null,
+                                        "ID already signed in by another computer",
+                                        "Sign In Error",
+                                        JOptionPane.ERROR_MESSAGE);
+
+        }
+        i++;
+      }
+      else {
+        JOptionPane.showMessageDialog(null,
+                                      "Enter User ID and Password",
+                                      "Error",
+                                      JOptionPane.ERROR_MESSAGE);
+      }
+
+
+    }catch(Exception u)
+    {
+      javax.swing.JOptionPane.showMessageDialog(null,
+            "Server Not Found", "Sign In Error",
+                                      JOptionPane.ERROR_MESSAGE);
+
+    }
+
+
+
+  }
+
+  void loginButton1_actionPerformed(ActionEvent e) {
+    try{
+
+      if(cameFromLogin)
+      {
+        PrintStream out = new PrintStream(sock.getOutputStream());
+      out.println("Exit#1");
+      sock.close();
+      Rsock.close();
+      //this.setVisible(false);
+      }
+      else
+      {
+          PrintStream out = new PrintStream(sock.getOutputStream());
+         out.println("DontExit#1");
+      }
+      System.out.println("sign in enter");
+      InetAddress host=InetAddress.getLocalHost();
+      Socket sock = new Socket(host, 9987);
+      PrintStream out = new PrintStream(sock.getOutputStream());
+      out.println("SignUp#1");
+
+      Socket client=socket.accept();
+      //ServerSocket server=new ServerSocket(6788);
+      System.out.println("socket accepted?");
+      ObjectInputStream ois=new ObjectInputStream(client.getInputStream());
+      ArrayList ids=(ArrayList)ois.readObject();
+      signUpFrame frame=new signUpFrame(ids,client,sock,this);
+      this.setVisible(false);
+      frame.show();
+
+    }catch(Exception u){
+      javax.swing.JOptionPane.showMessageDialog(null,
+            "Server Not Found", "Sign In Error",
+                                      JOptionPane.ERROR_MESSAGE);
+
+
+    }
+
+
+  }
+}
+
+class loginFrame_loginButton_actionAdapter implements java.awt.event.ActionListener {
+  loginFrame adaptee;
+
+  loginFrame_loginButton_actionAdapter(loginFrame adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e){
+    try{
+      adaptee.loginButton_actionPerformed(e);
+    }catch(Exception u){}
+//    adaptee.loginButton_actionPerformed(e);
+  }
+}
+
+class loginFrame_loginButton1_actionAdapter implements java.awt.event.ActionListener {
+  loginFrame adaptee;
+
+  loginFrame_loginButton1_actionAdapter(loginFrame adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.loginButton1_actionPerformed(e);
+  }
+}

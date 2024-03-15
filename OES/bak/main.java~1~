@@ -1,0 +1,51 @@
+
+import javax.swing.*;
+import java.awt.*;
+//import com.borland.jbcl.layout.*;
+import java.awt.event.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2008</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class main {
+  public main() {
+  }
+  public static void main(String[] args)throws Exception {
+    main main1 = new main();
+    ServerSocket server=new ServerSocket(6789);
+    Socket client;
+    client = server.accept();
+    InputStream instr = client.getInputStream();
+    InputStreamReader inread = new InputStreamReader(instr);
+    BufferedReader inp = new BufferedReader(inread);
+    String input=inp.readLine();
+    StringTokenizer token=new StringTokenizer(input,"#");
+    login user=new login(token.nextToken(),token.nextToken());
+    try
+    {
+      Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+    }catch(ClassNotFoundException e){System.out.println("no jdbc drivers installed. ");}
+
+    String filename = "D:\\my documents\\BI061004\\acp lab works\\Final Project OES\\OES.mdb";
+
+    String database = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=";
+    database+= filename.trim() + ";DriverID=22;READONLY=true}";
+
+    Connection con=DriverManager.getConnection(database,"","");
+
+    user.verifyUser(con);
+
+
+  }
+
+}

@@ -1,0 +1,152 @@
+package oesclient;
+
+import javax.swing.*;
+import java.awt.*;
+import com.borland.jbcl.layout.*;
+import java.awt.event.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2008</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class signUpFrame extends JFrame {
+  XYLayout xYLayout1 = new XYLayout();
+  JLabel jLabel1 = new JLabel();
+  JLabel jLabel2 = new JLabel();
+  JTextField jTextField1 = new JTextField();
+  JLabel jLabel3 = new JLabel();
+  JLabel jLabel4 = new JLabel();
+  JPasswordField jPasswordField1 = new JPasswordField();
+  JPasswordField jPasswordField2 = new JPasswordField();
+  JButton jButton1 = new JButton();
+  ArrayList ids;
+  Socket rSock;
+  Socket sSock;
+  JButton jButton2 = new JButton();
+  JFrame prev = new JFrame();
+
+  public signUpFrame(ArrayList ids,Socket r,Socket s,loginFrame f) {
+    try {
+      this.ids=ids;
+      this.rSock=r;
+      this.sSock=s;
+      prev=f;
+      jbInit();
+    }
+    catch(Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  void jbInit() throws Exception {
+    System.out.println("sign up frame constructor");
+    jLabel1.setFont(new java.awt.Font("JasmineUPC", 0, 50));
+    jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+    jLabel1.setText("Sign Up");
+    xYLayout1.setWidth(498);
+    xYLayout1.setHeight(375);
+    this.getContentPane().setLayout(xYLayout1);
+    jLabel2.setText("User ID");
+    jLabel3.setText("Password");
+    jLabel4.setText("Confirm Password");
+    jTextField1.setText("");
+    jPasswordField1.setText("");
+    jPasswordField2.setText("");
+    jButton1.setFont(new java.awt.Font("JasmineUPC", 0, 24));
+    jButton1.setText("Submit");
+    jButton1.addActionListener(new signUpFrame_jButton1_actionAdapter(this));
+    jButton2.addActionListener(new signUpFrame_jButton2_actionAdapter(this));
+    jButton2.setText("Back to Sign In");
+    jButton2.addActionListener(new signUpFrame_jButton2_actionAdapter(this));
+    jButton2.setFont(new java.awt.Font("JasmineUPC", 1, 22));
+    this.getContentPane().add(jLabel2, new XYConstraints(77, 114, 110, 32));
+    this.getContentPane().add(jLabel3,        new XYConstraints(76, 173, 110, 32));
+    this.getContentPane().add(jLabel4,       new XYConstraints(76, 226, 110, 32));
+    this.getContentPane().add(jPasswordField1,  new XYConstraints(202, 173, 172, 27));
+    this.getContentPane().add(jPasswordField2,     new XYConstraints(203, 230, 172, 27));
+    this.getContentPane().add(jTextField1, new XYConstraints(202, 118, 172, 26));
+    this.getContentPane().add(jLabel1,   new XYConstraints(145, 23, 194, 52));
+    this.getContentPane().add(jButton2,             new XYConstraints(27, 287, 142, 38));
+    this.getContentPane().add(jButton1, new XYConstraints(368, 286, 101, 36));
+    this.setSize(600,500);
+    System.out.println("sign up frame constructor ends");
+  }
+
+  void jButton1_actionPerformed(ActionEvent e) {
+    try{
+      String id = jTextField1.getText();
+      String pass = jPasswordField1.getText();
+      String Cpass = jPasswordField2.getText();
+      if (pass.equals(Cpass)) {
+        if (! (ids.contains(id))) {
+          PrintStream out = new PrintStream(sSock.getOutputStream());
+          out.println("info#" + id + "#" + pass);
+          JOptionPane.showMessageDialog(null,
+                                        "You have successfully Signed Up",
+                                        "Account Created",
+                                        JOptionPane.PLAIN_MESSAGE);
+          ids.add(id);
+
+
+        }
+        else {
+          JOptionPane.showMessageDialog(null,
+                                        "The ID you entered is not available,please choose another ID",
+                                        "ID Not Available",
+                                        JOptionPane.PLAIN_MESSAGE);
+        }
+      }
+      else
+      {
+        JOptionPane.showMessageDialog(null,
+                                      "Password Confirmation failed,Try again",
+                                      "Password Error",
+                                      JOptionPane.ERROR_MESSAGE);
+
+      }
+
+      }catch(Exception u){}
+}
+
+class signUpFrame_jButton1_actionAdapter implements java.awt.event.ActionListener {
+  signUpFrame adaptee;
+
+  signUpFrame_jButton1_actionAdapter(signUpFrame adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButton1_actionPerformed(e);
+  }
+}
+
+  void jButton2_actionPerformed(ActionEvent e) {
+    try{
+      PrintStream out = new PrintStream(sSock.getOutputStream());
+      out.println("back#1");
+      sSock.close();
+      rSock.close();
+      loginFrame previous=new loginFrame();
+      this.setVisible(false);
+      //prev.setVisible(true);
+      previous.setVisible(true);
+    }catch(Exception u){}
+  }
+}
+
+class signUpFrame_jButton2_actionAdapter implements java.awt.event.ActionListener {
+  signUpFrame adaptee;
+
+  signUpFrame_jButton2_actionAdapter(signUpFrame adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+    adaptee.jButton2_actionPerformed(e);
+  }
+}

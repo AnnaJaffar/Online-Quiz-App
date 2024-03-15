@@ -1,0 +1,297 @@
+package oesclient;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.*;
+import com.borland.jbcl.layout.*;
+import java.awt.event.*;
+import javax.swing.border.*;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2008</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class testView extends JFrame {
+  ArrayList tests;
+  ArrayList scores;
+  int size;
+  int i = 0;
+  JFrame prev = new JFrame();
+  XYLayout xYLayout1 = new XYLayout();
+  JLabel jLabel1 = new JLabel();
+  JLabel jLabel2 = new JLabel();
+  JLabel jLabel3 = new JLabel();
+  JButton jButton3 = new JButton();
+  Border border1;
+
+  //testView frame=new testView(tests,scores);
+
+  public testView(ArrayList t, ArrayList s, JFrame p) {
+    this.tests = t;
+    this.scores = s;
+    prev = p;
+    size = tests.size();
+    try {
+      jbInit();
+      if(!tests.isEmpty())
+      {
+        for (int i = 0; i < tests.size(); i++) {
+          String u=(String) tests.get(i);
+          if(u.equals("test1"))
+          {
+            u="General Knowledge Quiz";
+          }
+          jLabel3.setText(u +
+                          "                            " + (String) (scores.get(i)) + "\n");
+        }
+      }
+      else
+      {
+          jLabel3.setText("No Test Yet Taken");
+      }
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  void jbInit() throws Exception {
+    border1 = BorderFactory.createLineBorder(SystemColor.controlText, 1);
+    jLabel1.setFont(new java.awt.Font("Dialog", 1, 16));
+    jLabel1.setAlignmentY( (float) 0.5);
+    jLabel1.setText("Your Tests");
+    this.getContentPane().setLayout(xYLayout1);
+    jLabel2.setFont(new java.awt.Font("Dialog", 1, 16));
+    jLabel2.setText("Scores");
+
+    xYLayout1.setWidth(652);
+    xYLayout1.setHeight(382);
+    this.setSize(650, 400);
+
+    //jButton1.setVisible(false);
+    //jButton2.setVisible(false);
+
+    jButton3.setText("Back to Main");
+    jButton3.addActionListener(new testView_jButton3_actionAdapter(this));
+    jLabel3.setText("");
+    this.getContentPane().add(jLabel2, new XYConstraints(455, 20, 135, 44));
+    this.getContentPane().add(jLabel1, new XYConstraints(85, 27, 124, 32));
+    this.getContentPane().add(jLabel3, new XYConstraints(80, 88, 305, 30));
+    this.getContentPane().add(jButton3, new XYConstraints(248, 19, 132, 31));
+    this.setTitle("View Tests");
+  }
+
+  public void view() {
+    /*jLabel3.setText("1"+(String) tests.get(i));
+     jLabel4.setText("1 Score"+(String) scores.get(i));
+     i++;
+     if(i<size)
+     {
+       jLabel5.setText("2"+(String) tests.get(i));
+       jLabel10.setText("2 score"+ (String)scores.get(i));
+       i++;
+       if(i<size)
+       {
+         jLabel6.setText("3"+(String) tests.get(i));
+         jLabel11.setText("3 score"+(String) scores.get(i));
+         i++;
+         if(i<size)
+         {
+           jLabel7.setText("4"+(String) tests.get(i));
+           jLabel12.setText("4score"+(String) scores.get(i));
+           i++;
+           if(i<size)
+           {
+             jLabel8.setText("5"+(String) tests.get(i));
+             jLabel13.setText("5 score"+(String) scores.get(i));
+             i++;
+             if(i<size)
+             {
+               jLabel9.setText("6" +(String) tests.get(i));
+               jLabel14.setText("6 score" +(String) scores.get(i));
+               i++;
+
+             }
+
+           }
+
+         }
+
+       }
+
+     }
+     if(i<size)
+      {
+        jButton1.setVisible(true);
+       // jButton2.setVisible(true);
+      }
+     */
+  }
+
+  void jButton1_actionPerformed(ActionEvent e) {
+    /*    jButton1.setVisible(false);
+        jButton2.setVisible(true);
+        jLabel3.setText((String) tests.get(i));
+         jLabel4.setText((String) scores.get(i));
+         i++;
+         if(i<size)
+         {
+           jLabel5.setText( (String) tests.get(i));
+           jLabel10.setText( (String) scores.get(i));
+           i++;
+           if (i < size) {
+             jLabel6.setText( (String) tests.get(i));
+             jLabel11.setText( (String) scores.get(i));
+             i++;
+             if (i < size) {
+               jLabel7.setText( (String) tests.get(i));
+               jLabel12.setText( (String) scores.get(i));
+               i++;
+               if (i < size) {
+                 jLabel8.setText( (String) tests.get(i));
+                 jLabel13.setText( (String) scores.get(i));
+                 i++;
+                 if (i < size) {
+                   jLabel9.setText( (String) tests.get(i));
+                   jLabel14.setText( (String) scores.get(i));
+                   i++;
+                 }
+                 else
+                 {
+                     jLabel9.setText("");
+                     jLabel14.setText("");
+                 }
+
+               }
+               else
+               {
+                   jLabel8.setText("");
+                   jLabel13.setText("");
+                   jLabel9.setText("");
+                     jLabel14.setText("");
+               }
+
+             }
+             else
+             {
+                 jLabel7.setText("");
+                 jLabel12.setText("");
+                 jLabel8.setText("");
+                   jLabel13.setText("");
+                   jLabel9.setText("");
+                     jLabel14.setText("");
+
+
+             }
+
+           }
+           else
+           {
+               jLabel6.setText("");
+             jLabel11.setText("");
+             jLabel7.setText("");
+                 jLabel12.setText("");
+                 jLabel8.setText("");
+                   jLabel13.setText("");
+                   jLabel9.setText("");
+                     jLabel14.setText("");
+
+
+           }
+         }
+         else
+         {
+             jLabel5.setText("");
+           jLabel10.setText("");
+           jLabel6.setText("");
+             jLabel11.setText("");
+             jLabel7.setText("");
+                 jLabel12.setText("");
+                 jLabel8.setText("");
+                   jLabel13.setText("");
+                   jLabel9.setText("");
+                     jLabel14.setText("");
+
+         }
+         if(i<size)
+         {
+            jButton1.setVisible(true);
+            jButton2.setVisible(true);
+         }
+         else{
+           jButton2.setVisible(true);
+
+         }*/
+  }
+
+  void jButton2_actionPerformed(ActionEvent e) {
+    /*i--;
+     jLabel9.setText((String) tests.get(i));
+     jLabel14.setText((String) scores.get(i));
+
+     if(!(i<0))
+     {
+       i--;
+       jLabel8.setText( (String) tests.get(i));
+       jLabel13.setText( (String) scores.get(i));
+
+       if (!(i < 0)) {
+         i--;
+         jLabel7.setText( (String) tests.get(i));
+         jLabel12.setText( (String) scores.get(i));
+
+         if (!(i < 0)) {
+           i--;
+           jLabel6.setText( (String) tests.get(i));
+           jLabel11.setText( (String) scores.get(i));
+
+           if (!(i < 0)) {
+             i--;
+             jLabel5.setText( (String) tests.get(i));
+             jLabel10.setText( (String) scores.get(i));
+             if (!(i < 0)) {
+               i--;
+               jLabel3.setText( (String) tests.get(i));
+               jLabel4.setText( (String) scores.get(i));
+
+             }
+
+           }
+
+         }
+
+       }
+     }
+     if(i==0)
+     {
+       jButton2.setVisible(false);
+     }
+       }*/
+
+       void jButton3_actionPerformed(ActionEvent e) {
+     this.setVisible(false);
+         prev.setVisible(true);
+       }
+  }
+
+  void jButton3_actionPerformed(ActionEvent e) {
+
+  }
+}
+
+class testView_jButton3_actionAdapter implements java.awt.event.ActionListener {
+  testView adaptee;
+
+  testView_jButton3_actionAdapter(testView adaptee) {
+    this.adaptee = adaptee;
+  }
+  public void actionPerformed(ActionEvent e) {
+ //   adaptee.jButton3_actionPerformed(e);
+    adaptee.jButton3_actionPerformed(e);
+  }
+}
